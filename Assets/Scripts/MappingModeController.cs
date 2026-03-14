@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -10,15 +11,24 @@ public class MappingModeController : MonoBehaviour
 {
     public TMP_Text positionLabel;
     public TMP_Text timerLabel;
+    public TMP_Text songLengthLabel;
     public TMP_Text playLabel;
     public InputField speedInput;
     public AudioSource audio;
+    public AudioClip songClip;
+    public float timerCurrent;
+    public float songLength;
+    public String timerString;
+    public String songString;
+    private TimeSpan _timerTimeSpan;
+    private TimeSpan _songTimeSpan;
 
     public GameObject buttonPrefab;
     public GameObject panelMapper;
     public GameObject panelNaming;
+    public Slider sliderTimer;
     public float scaleSensitivity;
-
+    
     public KeyCode additionalKey = KeyCode.Q;
 
     private float curTime;
@@ -34,6 +44,8 @@ public class MappingModeController : MonoBehaviour
     private void Start()
     {
         SetupAudioClip();
+        
+        //output song's length
     }
 
     private void Awake()
@@ -44,8 +56,13 @@ public class MappingModeController : MonoBehaviour
     private void Update()
     {
         UpdatePositionLabel(Input.mousePosition.x, Input.mousePosition.y);
-        UpdateTimerLabel();
-
+        if (audio.isPlaying)
+        {
+            UpdateSlider();
+            UpdateTimerLabel();
+        }
+            
+        
         if (mapTimer.IsRunning && (Input.GetMouseButtonDown(0) || Input.GetKeyDown(additionalKey)))
         {
             curPosition[0] = Input.mousePosition.x;
@@ -61,12 +78,12 @@ public class MappingModeController : MonoBehaviour
         {
             Vector3 diffPos = Input.mousePosition - lastPosition;
             curButton.dragRegion.transform.localScale += new Vector3(((Mathf.Abs(diffPos.x) + Mathf.Abs(diffPos.y)) * 1 / 60f * scaleSensitivity), 0f, 0f);
-            curButton.dragRegion.transform.position += (diffPos * scaleSensitivity * 0.75f);
+            curButton.dragRegion.transform.position += (diffPos * (scaleSensitivity * 0.75f));
 
             curButton.InitializeLastButton(Input.mousePosition.x, Input.mousePosition.y);
             lastPosition = Input.mousePosition;
         }
-        else if ((Input.GetMouseButtonUp(0) || Input.GetKeyUp(additionalKey)) && curButton != null)
+        else if ((Input.GetMouseButtonUp(0) || Input.GetKeyUp(additionalKey)) && curButton)
         {
             ButtonItem button = new ButtonItem
             {
@@ -81,7 +98,7 @@ public class MappingModeController : MonoBehaviour
             lastPosition = Vector3.zero;
         }
 
-        if (curButton != null && curButton.buttonTimer.ElapsedMilliseconds > curButton.duration)
+        if (curButton && curButton.buttonTimer.ElapsedMilliseconds > curButton.duration)
         {
             ButtonItem button = new ButtonItem
             {
@@ -120,7 +137,22 @@ public class MappingModeController : MonoBehaviour
 
     private void UpdateTimerLabel()
     {
-        timerLabel.text = System.TimeSpan.FromMilliseconds(mapTimer.ElapsedMilliseconds).ToString();
+        // song's current Time
+        // _timerTimeSpan = System.TimeSpan.FromMilliseconds(mapTimer.ElapsedMilliseconds);
+        // timerString = $"{_timerTimeSpan.Minutes:D2}:{_timerTimeSpan.Seconds:D2}:{_timerTimeSpan.Milliseconds:D3}";
+        // timerLabel.text = timerString;
+    }
+
+    public void SliderSetTime()
+    {
+        audio.time = sliderTimer.value;
+        timerString = sliderTimer.value.ToString("F2");
+        timerLabel.text = timerString;
+    }
+
+    public void UpdateSlider()
+    {
+        sliderTimer.value = mapTimer.ElapsedMilliseconds / 1000;
     }
 
     public void OnPlayButtonPress()
@@ -134,6 +166,7 @@ public class MappingModeController : MonoBehaviour
         else
         {
             audio?.Play();
+            if (audio != null) audio.time = sliderTimer.value;
             speedInput.gameObject.SetActive(false);
             mapTimer.Start();
             playLabel.text = "Stop";
@@ -212,10 +245,20 @@ public class MappingModeController : MonoBehaviour
             yield return www;
 
             AudioClip clip = www.GetAudioClip(false, false);
-            if (clip != null)
+            if (clip)
             {
+                //load audio into AudioClip
                 audio.clip = clip;
-                UnityEngine.Debug.Log("✅ AudioClip berhasil dimuat: " + Path.GetFileName(path));
+                songClip = clip;
+                
+                //set the length
+                sliderTimer.maxValue = clip.length;
+                songString = Mathf.Round(clip.length - clip.length % 60) / 60 + ":" +
+                             Mathf.Round(clip.length % 60);
+                songLengthLabel.text = songString;
+                
+                Debug.Log("✅ AudioClip berhasil dimuat: " + Path.GetFileName(path));
+                Debug.Log("Song Length: " + clip.length + "seconds. (" + Mathf.Round(clip.length - clip.length%60) / 60 + ":" + Mathf.Round(clip.length%60) + ")");
             }
             else
             {

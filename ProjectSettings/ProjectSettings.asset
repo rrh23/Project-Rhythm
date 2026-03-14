@@ -830,11 +830,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 5a8f763d-d267-4f8d-ba63-a9525efae6b1
+  cloudProjectId: 87edcc3e-01c5-4ca9-a579-70b8bfed1d77
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: ere
-  organizationId: okitaova30
+  projectName: ProjectRhythm
+  organizationId: reidgerren05
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 1
   hmiLoadingImage: {fileID: 0}
