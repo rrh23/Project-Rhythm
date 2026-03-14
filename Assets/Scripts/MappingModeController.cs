@@ -13,6 +13,7 @@ public class MappingModeController : MonoBehaviour
     public TMP_Text timerLabel;
     public TMP_Text songLengthLabel;
     public TMP_Text playLabel;
+    public TMP_Text songFileLabel;
     public InputField speedInput;
     public AudioSource audio;
     public AudioClip songClip;
@@ -20,6 +21,7 @@ public class MappingModeController : MonoBehaviour
     public float songLength;
     public String timerString;
     public String songString;
+    public String songFilePath;
     private TimeSpan _timerTimeSpan;
     private TimeSpan _songTimeSpan;
 
@@ -36,10 +38,10 @@ public class MappingModeController : MonoBehaviour
     private MappingButton curButton;
     private Vector3 lastPosition = new Vector3();
 
-    // private System.Diagnostics.Stopwatch mapTimer = new System.Diagnostics.Stopwatch();
-
     private SortedDictionary<float, ButtonItem> mappedButtons = new SortedDictionary<float, ButtonItem>();
     private SortedList<float, MappingButton> displayingButtons = new SortedList<float, MappingButton>();
+    
+    public NamingPanel namingPanel;
 
     private void Start()
     {
@@ -227,7 +229,7 @@ public class MappingModeController : MonoBehaviour
             buttonData.buttons.Add(pair.Value);
         }
         GameData.TempMapping = buttonData.buttons;
-        UnityEngine.Debug.Log("✅ Mapping disimpan ke memory.");
+        Debug.Log("✅ Mapping disimpan ke memory.");
     }
 
     private float GetSpeedInputVal()
@@ -249,7 +251,7 @@ public class MappingModeController : MonoBehaviour
         }
         else
         {
-            UnityEngine.Debug.LogWarning("❌ Tidak ada file audio dipilih.");
+            Debug.LogWarning("❌ Tidak ada file audio dipilih.");
         }
     }
 
@@ -259,6 +261,11 @@ public class MappingModeController : MonoBehaviour
         playLabel.text = "Start";
     }
 
+    public void SaveAudio()
+    {
+        namingPanel.audioSrcPath = songFilePath;
+
+    }
     private IEnumerator LoadAudioFromFile(string path)
     {
         string url = "file://" + path;
@@ -279,12 +286,16 @@ public class MappingModeController : MonoBehaviour
                              Mathf.Round(clip.length % 60);
                 songLengthLabel.text = songString;
                 
+                //set title
+                songFilePath = Path.GetFileName(path);
+                songFileLabel.text = songFilePath;
+                
                 Debug.Log("✅ AudioClip berhasil dimuat: " + Path.GetFileName(path));
                 Debug.Log("Song Length: " + clip.length + " seconds. (" + Mathf.Round(clip.length - clip.length%60) / 60 + ":" + Mathf.Round(clip.length%60) + ")");
             }
             else
             {
-                UnityEngine.Debug.LogError("❌ Gagal memuat AudioClip dari: " + path);
+                Debug.LogError("❌ Gagal memuat AudioClip dari: " + path);
             }
         }
     }

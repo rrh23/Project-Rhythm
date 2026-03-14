@@ -38,7 +38,7 @@ public class NamingPanel : MonoBehaviour
     public TMP_Text labelSfxDragReleaseFile;
 
     // path sumber (dipilih user)
-    private string audioSrcPath;
+    public string audioSrcPath;
     private string videoSrcPath;
     private string menuBgSrcPath;
 
@@ -46,6 +46,18 @@ public class NamingPanel : MonoBehaviour
     private string sfxClickSrcPath;
     private string sfxDragPressSrcPath;
     private string sfxDragReleaseSrcPath;
+    //
+    // [Header("Metadata")]
+    //
+    // public string title;
+    // public string artist;
+    // public string audioPath;          // hanya nama file
+    // public string videoPath;          // hanya nama file (boleh kosong)
+    // public string menuBackgroundPath; // hanya nama file
+    // public List<ButtonItem> bitmapData;
+    // public string sfxClickPath;
+    // public string sfxDragPressPath;
+    // public string sfxDragReleasePath;
 
     void Awake() { Instance = this; }
 
@@ -99,6 +111,11 @@ public class NamingPanel : MonoBehaviour
         }
     }
 
+    public void InitializeSongPathMetadata(String songFilePath)
+    {
+        audioSrcPath = songFilePath;
+    }
+
     // ===========================
     // SFX PICKERS (opsional)
     // ===========================
@@ -140,6 +157,13 @@ public class NamingPanel : MonoBehaviour
 
     public void OnSave()
     {
+        //debug.log all the metadata first
+        Debug.Log("Song Title:  " + (inputSongTitle ? inputSongTitle.text.Trim() : "").Trim());
+        Debug.Log("Artist Name: " + (inputArtistName ? inputArtistName.text.Trim() : "").Trim());
+        Debug.Log("Audio Path: " + audioSrcPath);
+        Debug.Log("Video Path: " + videoSrcPath);
+        Debug.Log("Menu Path: " + menuBgSrcPath);
+        
         string songTitle  = (inputSongTitle ? inputSongTitle.text.Trim() : "").Trim();
         string artistName = (inputArtistName ? inputArtistName.text.Trim() : "").Trim();
 
