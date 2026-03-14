@@ -36,7 +36,7 @@ public class MappingModeController : MonoBehaviour
     private MappingButton curButton;
     private Vector3 lastPosition = new Vector3();
 
-    private System.Diagnostics.Stopwatch mapTimer = new System.Diagnostics.Stopwatch();
+    // private System.Diagnostics.Stopwatch mapTimer = new System.Diagnostics.Stopwatch();
 
     private SortedDictionary<float, ButtonItem> mappedButtons = new SortedDictionary<float, ButtonItem>();
     private SortedList<float, MappingButton> displayingButtons = new SortedList<float, MappingButton>();
@@ -63,11 +63,11 @@ public class MappingModeController : MonoBehaviour
         }
             
         
-        if (mapTimer.IsRunning && (Input.GetMouseButtonDown(0) || Input.GetKeyDown(additionalKey)))
+        if (audio.isPlaying && (Input.GetMouseButtonDown(0) || Input.GetKeyDown(additionalKey)))
         {
             curPosition[0] = Input.mousePosition.x;
             curPosition[1] = Input.mousePosition.y;
-            curTime = mapTimer.ElapsedMilliseconds;
+            curTime = audio.time * 1000f;
 
             bool isSlider = true;
             curButton = CreateButton(curPosition[0], curPosition[1], isSlider);
@@ -126,7 +126,7 @@ public class MappingModeController : MonoBehaviour
         mappingButton.SetType(isSlider);
         mappingButton.InitializeFirstButton(x, y);
 
-        displayingButtons.Add(mapTimer.ElapsedMilliseconds, mappingButton);
+        displayingButtons.Add(audio.time * 1000f, mappingButton);
         return mappingButton;
     }
 
@@ -137,10 +137,12 @@ public class MappingModeController : MonoBehaviour
 
     private void UpdateTimerLabel()
     {
-        // song's current Time
+        // // song's current Time
         // _timerTimeSpan = System.TimeSpan.FromMilliseconds(mapTimer.ElapsedMilliseconds);
         // timerString = $"{_timerTimeSpan.Minutes:D2}:{_timerTimeSpan.Seconds:D2}:{_timerTimeSpan.Milliseconds:D3}";
         // timerLabel.text = timerString;
+        
+
     }
 
     public void SliderSetTime()
@@ -152,15 +154,16 @@ public class MappingModeController : MonoBehaviour
 
     public void UpdateSlider()
     {
-        sliderTimer.value = mapTimer.ElapsedMilliseconds / 1000;
+        // sliderTimer.value = mapTimer.ElapsedMilliseconds / 1000;
+        sliderTimer.value = audio.time;
     }
 
     public void OnPlayButtonPress()
     {
-        if (mapTimer.IsRunning)
+        if (audio.isPlaying)
         {
             audio?.Pause();
-            mapTimer.Stop();
+            // mapTimer.Stop();
             playLabel.text = "Start";
         }
         else
@@ -168,7 +171,7 @@ public class MappingModeController : MonoBehaviour
             audio?.Play();
             if (audio != null) audio.time = sliderTimer.value;
             speedInput.gameObject.SetActive(false);
-            mapTimer.Start();
+            // mapTimer.Start();
             playLabel.text = "Stop";
         }
     }
@@ -179,7 +182,7 @@ public class MappingModeController : MonoBehaviour
             audio.Stop();
         audio.time = 0;
 
-        mapTimer.Reset();
+        // mapTimer.Reset();
         playLabel.text = "Start";
         speedInput.gameObject.SetActive(true);
 
@@ -258,7 +261,7 @@ public class MappingModeController : MonoBehaviour
                 songLengthLabel.text = songString;
                 
                 Debug.Log("✅ AudioClip berhasil dimuat: " + Path.GetFileName(path));
-                Debug.Log("Song Length: " + clip.length + "seconds. (" + Mathf.Round(clip.length - clip.length%60) / 60 + ":" + Mathf.Round(clip.length%60) + ")");
+                Debug.Log("Song Length: " + clip.length + " seconds. (" + Mathf.Round(clip.length - clip.length%60) / 60 + ":" + Mathf.Round(clip.length%60) + ")");
             }
             else
             {
