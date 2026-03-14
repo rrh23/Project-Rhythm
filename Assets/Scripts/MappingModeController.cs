@@ -61,7 +61,6 @@ public class MappingModeController : MonoBehaviour
             UpdateSlider();
             UpdateTimerLabel();
         }
-            
         
         if (audio.isPlaying && (Input.GetMouseButtonDown(0) || Input.GetKeyDown(additionalKey)))
         {
@@ -74,6 +73,9 @@ public class MappingModeController : MonoBehaviour
             lastPosition = Input.mousePosition;
         }
 
+        //doesnt let you place notes if hovering over UI
+        if (!(curPosition[1] < 420) && !(curPosition[1] > 70)) return;
+        
         if ((Input.GetMouseButton(0) || Input.GetKey(additionalKey)) && curButton != null)
         {
             Vector3 diffPos = Input.mousePosition - lastPosition;
@@ -141,8 +143,8 @@ public class MappingModeController : MonoBehaviour
         // _timerTimeSpan = System.TimeSpan.FromMilliseconds(mapTimer.ElapsedMilliseconds);
         // timerString = $"{_timerTimeSpan.Minutes:D2}:{_timerTimeSpan.Seconds:D2}:{_timerTimeSpan.Milliseconds:D3}";
         // timerLabel.text = timerString;
-        
-
+        timerString = audio.time.ToString("F2");
+        timerLabel.text = timerString;
     }
 
     public void SliderSetTime()
@@ -217,6 +219,17 @@ public class MappingModeController : MonoBehaviour
         panelNaming.SetActive(true);
     }
 
+    public void Saving()
+    {
+        ButtonData buttonData = new ButtonData();
+        foreach (var pair in mappedButtons)
+        {
+            buttonData.buttons.Add(pair.Value);
+        }
+        GameData.TempMapping = buttonData.buttons;
+        UnityEngine.Debug.Log("✅ Mapping disimpan ke memory.");
+    }
+
     private float GetSpeedInputVal()
     {
         float speed = 1f;
@@ -238,6 +251,12 @@ public class MappingModeController : MonoBehaviour
         {
             UnityEngine.Debug.LogWarning("❌ Tidak ada file audio dipilih.");
         }
+    }
+
+    public void RestartConfirm()
+    {
+        audio.Pause();
+        playLabel.text = "Start";
     }
 
     private IEnumerator LoadAudioFromFile(string path)
