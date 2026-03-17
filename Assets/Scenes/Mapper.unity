@@ -2042,7 +2042,7 @@ MonoBehaviour:
   sliderTimer: {fileID: 727794095}
   scaleSensitivity: 0.62
   additionalKey: 113
-  namingObject: {fileID: 1214901571}
+  namingPanel: {fileID: 1214901574}
 --- !u!1 &683485359
 GameObject:
   m_ObjectHideFlags: 0
@@ -4715,6 +4715,7 @@ MonoBehaviour:
   labelSfxClickFile: {fileID: 987342200}
   labelSfxDragPressFile: {fileID: 0}
   labelSfxDragReleaseFile: {fileID: 0}
+  audioSrcPath: 
 --- !u!114 &1214901575
 MonoBehaviour:
   m_ObjectHideFlags: 0

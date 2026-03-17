@@ -46,18 +46,7 @@ public class NamingPanel : MonoBehaviour
     private string sfxClickSrcPath;
     private string sfxDragPressSrcPath;
     private string sfxDragReleaseSrcPath;
-    //
-    // [Header("Metadata")]
-    //
-    // public string title;
-    // public string artist;
-    // public string audioPath;          // hanya nama file
-    // public string videoPath;          // hanya nama file (boleh kosong)
-    // public string menuBackgroundPath; // hanya nama file
-    // public List<ButtonItem> bitmapData;
-    // public string sfxClickPath;
-    // public string sfxDragPressPath;
-    // public string sfxDragReleasePath;
+    
 
     void Awake() { Instance = this; }
 

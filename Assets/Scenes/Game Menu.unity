@@ -12786,7 +12786,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Add Song
+  m_text: Edit Song
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8a611f4ac0b5c98448843ac9d86a91e9, type: 2}
   m_sharedMaterial: {fileID: -3924948589443412788, guid: 8a611f4ac0b5c98448843ac9d86a91e9,
